@@ -1,6 +1,16 @@
 # blackroad-dotfiles
 
-Personal dotfiles and shell configuration manager with symlinks, snapshots, diff, and restore.
+[![CI](https://github.com/blackboxprogramming/blackroad-dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/blackboxprogramming/blackroad-dotfiles/actions/workflows/ci.yml)
+[![Security Scan](https://github.com/blackboxprogramming/blackroad-dotfiles/actions/workflows/security.yml/badge.svg)](https://github.com/blackboxprogramming/blackroad-dotfiles/actions/workflows/security.yml)
+
+Dotfiles and shell configuration manager with symlinks, snapshots, diff, and restore.
+Includes Cloudflare Workers for long-running sync tasks, Vercel pages, and Railway services.
+
+## Quick Start
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Usage
 
@@ -46,13 +56,60 @@ python dotfiles_manager.py list
 
 ## Categories
 
-`shell` 🐚 | `editor` ✏️ | `git` 🌿 | `tmux` 🖥️ | `tool` 🔧
+`shell` | `editor` | `git` | `tmux` | `tool`
 
 ## Storage
 
 SQLite at `~/.blackroad-personal/dotfiles.db`.
 Snapshots store full file content (base64) for reliable restore.
 
+## Testing
+
+```bash
+pytest tests/ -v
+```
+
+## Workflows
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| CI | Push/PR to `main` | Tests (Python 3.11/3.12) + lint |
+| Security Scan | Push/PR + weekly | CodeQL analysis + dependency review |
+| Automerge | PR labeled `automerge` | Auto-squash-merge passing PRs |
+| Deploy Cloudflare | Push to `workers/` | Deploy Cloudflare Worker |
+| Deploy Vercel | Push to `pages/` | Deploy Vercel pages |
+| Deploy Railway | Push to `services/` | Deploy Railway services |
+
+All GitHub Actions are pinned to specific commit SHAs for supply-chain security.
+Dependabot is configured to keep all dependencies up to date.
+
+## Cloudflare Worker API
+
+The worker at `workers/` handles long-running tasks:
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/api/validate-manifest` | POST | Validate dotfiles manifest JSON |
+| `/api/sync-status` | GET | Get last sync status |
+| `/api/trigger-sync` | POST | Trigger background sync |
+
+## Infrastructure
+
+- **Cloudflare Workers** — Long-running sync, manifest validation, scheduled health checks
+- **Vercel** — Static pages and dashboard (`pages/`)
+- **Railway** — Backend services (`services/`)
+- **Stripe** — Product and subscription management (configured via secrets)
+
+## Security
+
+- All Actions pinned to commit SHA (not mutable tags)
+- CodeQL + dependency review on every PR
+- Dependabot auto-updates with automerge for Actions
+- CODEOWNERS enforced review policy
+- See [SECURITY.md](SECURITY.md) for vulnerability reporting
+
 ## License
 
-Proprietary — BlackRoad OS, Inc.
+Proprietary — BlackRoad OS, Inc. All Rights Reserved.
+This software is NOT open source. See [LICENSE](LICENSE) for terms.

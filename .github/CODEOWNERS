@@ -1,0 +1,11 @@
+# BlackRoad OS, Inc. — Code Owners
+# All changes require review from the repository owner
+
+* @blackboxprogramming
+
+# Workflows require explicit approval
+.github/ @blackboxprogramming
+
+# Infrastructure
+workers/ @blackboxprogramming
+services/ @blackboxprogramming

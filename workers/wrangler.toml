@@ -1,0 +1,14 @@
+name = "blackroad-dotfiles-worker"
+main = "src/index.js"
+compatibility_date = "2025-12-01"
+account_id = ""  # Set via CLOUDFLARE_ACCOUNT_ID secret
+
+[vars]
+ENVIRONMENT = "production"
+
+[triggers]
+crons = ["0 */6 * * *"]
+
+[[kv_namespaces]]
+binding = "DOTFILES_KV"
+id = ""  # Set in Cloudflare dashboard

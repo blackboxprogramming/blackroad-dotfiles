@@ -1,0 +1,27 @@
+name: Deploy Cloudflare Worker
+on:
+  push:
+    branches: [main]
+    paths:
+      - "workers/**"
+      - "wrangler.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        with:
+          node-version: "20"
+      - run: npm ci
+        working-directory: workers
+      - uses: cloudflare/wrangler-action@da0e0c3e70d9f4a494ee2a52c50eb4db6d23c48a # v3.14.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: workers

@@ -1,6 +1,7 @@
 """Tests for dotfiles_manager.py"""
 import base64, hashlib, json, os, sys
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 import pytest
 
@@ -35,8 +36,8 @@ def test_register_dotfile(tmp_db):
     src = tmp_db / "zshrc"
     src.write_text("# zsh")
     dst = tmp_db / ".zshrc"
-    args = MagicMock(name="zshrc", source=str(src), target=str(dst),
-                     category="shell", description="Zsh config", auto=False)
+    args = SimpleNamespace(name="zshrc", source=str(src), target=str(dst),
+                           category="shell", description="Zsh config", auto=False)
     dm.cmd_register(args)
     db  = dm.get_db()
     row = db.execute("SELECT * FROM dotfiles WHERE name='zshrc'").fetchone()
@@ -48,8 +49,8 @@ def test_register_duplicate_warns(tmp_db, capsys):
     src = tmp_db / "vimrc"
     src.write_text("# vim")
     dst = tmp_db / ".vimrc"
-    args = MagicMock(name="vimrc", source=str(src), target=str(dst),
-                     category="editor", description="", auto=False)
+    args = SimpleNamespace(name="vimrc", source=str(src), target=str(dst),
+                           category="editor", description="", auto=False)
     dm.cmd_register(args)
     dm.cmd_register(args)   # duplicate
     out = capsys.readouterr()
@@ -70,7 +71,7 @@ def test_link_already_linked(tmp_db, capsys):
     dm.cmd_link(args)
     dm.cmd_link(args)   # second time
     out = capsys.readouterr().out
-    assert "already linked" in out
+    assert "already linked" in out.lower()
 
 
 def test_backup_creates_snapshot(tmp_db):

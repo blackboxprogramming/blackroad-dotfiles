@@ -1,0 +1,21 @@
+name: Deploy Railway
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/**"
+      - "railway.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: bervProject/railway-deploy@3d7e4cbce155af31c2e7bbc0386e0b4191cf6698 # v1.0.2
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+          service: ${{ secrets.RAILWAY_SERVICE_ID }}
