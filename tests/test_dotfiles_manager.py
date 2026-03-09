@@ -80,7 +80,7 @@ def test_link_already_linked(tmp_db, capsys):
     dm.cmd_link(args)
     dm.cmd_link(args)   # second time
     out = capsys.readouterr().out
-    assert "already linked" in out
+    assert "already linked" in out.lower()
 
 
 def test_backup_creates_snapshot(tmp_db):
