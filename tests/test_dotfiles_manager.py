@@ -35,8 +35,13 @@ def test_register_dotfile(tmp_db):
     src = tmp_db / "zshrc"
     src.write_text("# zsh")
     dst = tmp_db / ".zshrc"
-    args = MagicMock(name="zshrc", source=str(src), target=str(dst),
-                     category="shell", description="Zsh config", auto=False)
+    args = MagicMock()
+    args.name = "zshrc"
+    args.source = str(src)
+    args.target = str(dst)
+    args.category = "shell"
+    args.description = "Zsh config"
+    args.auto = False
     dm.cmd_register(args)
     db  = dm.get_db()
     row = db.execute("SELECT * FROM dotfiles WHERE name='zshrc'").fetchone()
@@ -48,8 +53,13 @@ def test_register_duplicate_warns(tmp_db, capsys):
     src = tmp_db / "vimrc"
     src.write_text("# vim")
     dst = tmp_db / ".vimrc"
-    args = MagicMock(name="vimrc", source=str(src), target=str(dst),
-                     category="editor", description="", auto=False)
+    args = MagicMock()
+    args.name = "vimrc"
+    args.source = str(src)
+    args.target = str(dst)
+    args.category = "editor"
+    args.description = ""
+    args.auto = False
     dm.cmd_register(args)
     dm.cmd_register(args)   # duplicate
     out = capsys.readouterr()
